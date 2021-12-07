@@ -64,7 +64,7 @@ char *lsh_read_line(void)
         c = getchar();
 
         //if we hit EOF, replace it with a null character and return.
-        if(c == EOF || c == "\n") {
+        if(c == EOF || c == '\n') {
             buffer[position] = '\0';
             return buffer;
         } else {
@@ -97,7 +97,7 @@ char **lsh_split_line(char *line)
         exit(EXIT_FAILURE);
     }
 
-    token = strok(line, LSH_TOK_DELIM);
+    token = strtok(line, LSH_TOK_DELIM);
     while (token != NULL) {
         tokens[position] = token;
         position++;
@@ -173,7 +173,7 @@ Builtin function implementation
 */
 int lsh_cd(char **args)
 {
-    if (*args[1] == NULL) {
+    if (args[1] == NULL) {
         fprintf(stderr, "lsh: expected argument to \"cd\"\n");
     } else {
         if (chdir(args[1]) != 0) {
@@ -194,7 +194,7 @@ int lsh_help(char **args)
         printf(" %s\n", builtin_str[i]);
     }
 
-    prinf("Use the man command for information on other programs.\n");
+    printf("Use the \"man\" command for information on other programs.\n");
     return 1;
 }
 
