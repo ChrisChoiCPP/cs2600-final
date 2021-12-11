@@ -87,7 +87,7 @@ struct editorConfig {
     char *filename;
     char statusmsg[80];
     time_t statusmsg_time;
-    struct editorSyntax * syntax;
+    struct editorSyntax *syntax;
     struct termios orig_termios;
 };
 
@@ -237,7 +237,7 @@ int getWindowSize(int *rows, int *cols) {
 /*** syntax highlighting ***/
 
 int is_separator(int c) {
-    return isspace(c) || c == '\0' || strchr(",.[]+-/*=~%<>{};", c) != NULL;
+    return isspace(c) || c == '\0' || (strchr(",.()+-/*=~%<>[];", c) != NULL);
 }
 
 void editorUpdateSyntax(erow *row) {
@@ -381,19 +381,20 @@ void editorSelectSyntaxHighlight() {
             int is_ext = (s->filematch[i][0] == '.');
             if ((is_ext && ext && !strcmp(ext, s->filematch[i])) ||
                 (!is_ext && strstr(E.filename, s->filematch[i]))) {
-            E.syntax = s;
+                E.syntax = s;
 
-            int filerow;
-            for (filerow = 0; filerow < E.numrows; filerow++) {
-                editorUpdateSyntax(&E.row[filerow]);
-            }
+                int filerow;
+                for (filerow = 0; filerow < E.numrows; filerow++) {
+                    editorUpdateSyntax(&E.row[filerow]);
+                }
 
-            return;
+                return;
             }
             i++;
         }
     }
 }
+
 /*** row operations ***/
 
 int editorRowCxToRx(erow *row, int cx) {
@@ -449,7 +450,7 @@ void editorInsertRow(int at, char *s, size_t len) {
 
     E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
     memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
-    for (int j = at + 1; j <= E.numrows; j++) E.row[j]. idx++;
+    for (int j = at + 1; j <= E.numrows; j++) E.row[j].idx++;
 
     E.row[at].idx = at;
 
@@ -484,7 +485,7 @@ void editorDelRow(int at) {
 }
 
 void editorRowInsertChar(erow *row, int at, int c) {
-    if (at < 0 || at > row->size) at =row->size;
+    if (at < 0 || at > row->size) at = row->size;
     row->chars = realloc(row->chars, row->size + 2);
     memmove(&row->chars[at + 1], &row->chars[at], row->size - at + 1);
     row->size++;
@@ -659,6 +660,7 @@ void editorFindCallback(char *query, int key) {
         current += direction;
         if (current == -1) current = E.numrows - 1;
         else if (current == E.numrows) current = 0;
+        
         erow *row = &E.row[current];
         char *match = strstr(row->render, query);
         if (match) {

@@ -1,0 +1,11 @@
+Hello.  My name is Christopher Choi and this is my final for CS2600.
+Enter key works
+woohoo
+1234567890
+
+look enter key really works.
+backspace(AND ARROW KEYS) too
+
+
+look for this word: pineapple
+wadwasdwasdwasdwasdwasdwadwasdwasdwadwapineappledwadswasdwasdwa
