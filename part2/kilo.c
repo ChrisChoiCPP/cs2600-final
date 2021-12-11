@@ -286,9 +286,9 @@ void editorUpdateSyntax(erow *row) {
                     continue;
                 }
             } else if (!strncmp(&row->render[i], mcs, mcs_len)) {
-                memset(&row->hl[i], HL_MLCOMMENT, mce_len);
-                i+= mce_len;
-                in_comment = 0;
+                memset(&row->hl[i], HL_MLCOMMENT, mcs_len);
+                i+= mcs_len;
+                in_comment = 1;
                 continue;
             }
         }
@@ -813,7 +813,7 @@ void editorDrawStatusBar(struct abuf *ab) {
     abAppend(ab, status, len);
     while (len < E.screencols) {
         if (E.screencols - len == rlen) {
-            abAppend(ab, rstatus, len);
+            abAppend(ab, rstatus, rlen);
             break;
         } else {
             abAppend(ab, " ", 1);
@@ -846,10 +846,9 @@ void editorRefreshScreen() {
 
     char buf[32];
     snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
-                                              (E.cx - E.coloff) + 1);
+                                              (E.rx - E.coloff) + 1);
     abAppend(&ab, buf, strlen(buf));
 
-    abAppend(&ab, "\x1b[H", 3);
     abAppend(&ab, "\x1b[?25h", 6);
 
     write (STDOUT_FILENO, ab.b, ab.len);
